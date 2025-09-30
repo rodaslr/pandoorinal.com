@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PANDO - Viste con elegancia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: #f9f9fb;
+      color: #1a1a1a;
+    }
+    header {
+      background: linear-gradient(135deg, #1d3557, #457b9d);
+      color: #fff;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.7rem;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+    header p {
+      font-size: 1.1rem;
+      margin-top: 8px;
+    }
+    #contador { margin-top: 12px; font-size: 1rem; color: #f1fa8c; }
+
+    .contenedor { max-width: 1200px; margin: 30px auto; padding: 0 15px; }
+
+    .tabs { text-align: center; margin-bottom: 30px; }
+    .tabs button {
+      background: #f1faee;
+      color: #1d3557;
+      border: 2px solid #1d3557;
+      padding: 12px 24px;
+      margin: 0 7px;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .tabs button:hover {
+      background: #1d3557; color: #fff; transform: scale(1.05);
+    }
+
+    /* vista horizontal */
+    .scroll-grid {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding: 10px;
+      scroll-behavior: smooth;
+    }
+    .scroll-grid::-webkit-scrollbar { height: 10px; }
+    .scroll-grid::-webkit-scrollbar-thumb {
+      background: #457b9d; border-radius: 10px;
+    }
+
+    /* vista vertical */
+    .grid-vertical {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 10px;
+    }
+
+    .card {
+      min-width: 200px;
+      max-width: 240px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    .card:hover { transform: scale(1.05); }
+    .card img { width: 100%; height: 180px; object-fit: cover; }
+
+    .info { padding: 12px; text-align: center; }
+    .info h3 { margin: 0; font-size: 1.1rem; color: #1a1a1a; }
+    .info p { margin: 5px 0; font-size: 0.9rem; color: #555; }
+    .precio { font-size: 1rem; font-weight: bold; color: #1d3557; }
+    .marca { font-size: 0.8rem; color: #888; }
+
+    .btn {
+      display: block; width: 100%; padding: 10px;
+      background: linear-gradient(135deg, #1d3557, #457b9d);
+      color: #fff; border: none; cursor: pointer;
+      font-size: 0.9rem; font-weight: bold;
+      border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .btn:hover {
+      background: #f1fa8c; color: #1d3557; transform: scale(1.03);
+    }
+
+    .carrito {
+      background: #fff; margin-top: 40px; padding: 20px;
+      border-radius: 14px; box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+      color: #1a1a1a; border: 1px solid #ddd;
+    }
+    .acciones-carrito { display: flex; gap: 10px; margin-top: 10px; }
+    .acciones-carrito .btn { flex: 1; }
+
+    footer {
+      background: #1d3557; color: #fff; text-align: center;
+      padding: 20px; margin-top: 50px;
+    }
+    footer a { color: #f1fa8c; text-decoration: none; margin: 0 5px; }
+    footer a:hover { color: #a8dadc; }
+
+    /* Modal */
+    .modal {
+      display: none; position: fixed; z-index: 999;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center; align-items: center;
+    }
+    .modal img {
+      max-width: 80%; max-height: 80%;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    }
+    .modal:target { display: flex; }
+    .modal a.cerrar {
+      position: absolute; top: 20px; right: 30px;
+      color: #fff; font-size: 2rem; text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PANDO</h1>
+    <p>MODA & ESTILO</p>
+    <p id="contador">Productos en carrito: 0</p>
+  </header>
+  <!-- ENLACE DESTACADO PARA QUE LAS PERSONAS LO ENCUENTREN -->
+  <div style="text-align:center; margin: 22px 0;">
+    <a href="https://rodaslr.github.io/pandoorinal.com/" target="_blank"
+      style="display:inline-block; background:linear-gradient(135deg,#1d3557,#457b9d); color:#fff; font-size:1.2rem; font-weight:bold; padding:14px 36px; border-radius:10px; text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,0.13); transition:background 0.3s;">
+      🌟 ¡Visita nuestra tienda online aquí! 🌟
+    </a>
+  </div>
+  <!-- FIN DEL ENLACE DESTACADO -->
+
+  <div class="contenedor">
+    <div class="tabs">
+      <button onclick="mostrar('zapatillas')">Zapatillas</button>
+      <button onclick="mostrar('conjuntos')">Conjuntos</button>
+      <button onclick="mostrar('casacas')">Casacas</button>
+      <button onclick="mostrar('accesorios')">Accesorios</button>
+    </div>
+
+  <!-- Zapatillas -->
+<div id="zapatillas" class="scroll-grid">
+  <!-- Producto 1 -->
+  <div class="card" data-id="1" data-nombre="Zapatilla Negra LR" data-precio="75">
+    <a href="img/zapatilla .jpg.png"><img src="img/zapatilla .jpg.png" alt="Zapatilla Negra"></a>
+    <div class="info">
+      <h3>Zapatilla</h3>
+      <p>Negro y blanco, talla 39</p>
+      <p class="marca">Marca: LR</p>
+      <p class="precio">S/75</p>
+    </div>
+    <button class="btn agregar">Agregar al carrito</button>
+  </div>
+
+  <!-- Producto 2 -->
+  <div class="card" data-id="2" data-nombre="Zapatilla Sport Negra LR" data-precio="75">
+    <a href="img/zapatilla.jpg 2.png"><img src="img/zapatilla.jpg 2.png" alt="Zapatilla Sport Negra"></a>
+    <div class="info">
+      <h3>Zapatilla</h3>
+      <p>Negro y blanco, talla 40</p>
+      <p class="marca">Marca: LR</p>
+      <p class="precio">S/75</p>
+    </div>
+    <button class="btn agregar">Agregar al carrito</button>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="card" data-id="3" data-nombre="Zapatilla Sport Azul LR" data-precio="80">
+    <a href="img/zapitlla.jpg3.png"><img src="img/zapitlla.jpg3.png" alt="Zapatilla Sport Azul"></a>
+    <div class="info">
+      <h3>Zapatilla</h3>
+      <p>Azul, talla 40</p>
+      <p class="marca">Marca: LR</p>
+      <p class="precio">S/80</p>
+    </div>
+    <button class="btn agregar">Agregar al carrito</button>
+  </div>
+
+  <!-- MÁS PRODUCTOS AQUÍ -->
+  <!-- Copias este bloque y solo cambias el ID, nombre, precio e imagen -->
+  <!-- Producto 4 -->
+  <div class="card" data-id="4" data-nombre="Zapatilla Blanca LR" data-precio="90">
+    <a href="img/zapatilla.jpg.4.png"><img src="img/zapatilla.jpg.4.png" alt="Zapatilla Blanca"></a>
+    <div class="info">
+      <h3>Zapatilla</h3>
+      <p>Blanco & rojo clásico , talla 41</p>
+      <p class="marca">Marca: LR</p>
+      <p class="precio">S/90</p>
+    </div>
+    <button class="btn agregar">Agregar al carrito</button>
+  </div>
+
+</div> <!-- cierre de scroll-grid -->
+
+<!-- Modales para ver imagen completa -->
+<div id="img1" class="modal">
+  <img src="img/zapatilla .jpg.png" alt="Zapatilla Negra">
+  <a href="#" style="position:absolute;top:20px;right:30px;color:#fff;font-size:2rem;">✖</a>
+</div>
+
+<div id="img2" class="modal">
+  <img src="img/zapatilla.jpg 2.png" alt="Zapatilla Sport Negra">
+  <a href="#" style="position:absolute;top:20px;right:30px;color:#fff;font-size:2rem;">✖</a>
+</div>
+
+<div id="img3" class="modal">
+  <img src="img/zapitlla.jpg3.png" alt="Zapatilla Sport Azul">
+  <a href="#" style="position:absolute;top:20px;right:30px;color:#fff;font-size:2rem;">✖</a>
+</div>
+
+<div id="img4" class="modal">
+  <img src="img/zapatilla.jpg.4.png" alt="Zapatilla Blanca">
+  <a href="#" style="position:absolute;top:20px;right:30px;color:#fff;font-size:2rem;">✖</a>
+</div>
+
+    <!-- Conjuntos -->
+    <div id="conjuntos" class="grid-vertical" style="display:none;">
+      <div class="card" data-id="11" data-nombre="Conjunto Urbano LR" data-precio="150">
+        <a href="img/conjunto.jpg.png"><img src="img/conjunto.jpg.png" alt="Conjunto Urbano"></a>
+        <div class="info">
+          <h3>Conjunto deportivo</h3>
+          <p>Azul con detalles blancos, talla M</p>
+          <p class="marca">Marca: LR</p>
+          <p class="precio">S/150</p>
+        </div>
+        <button class="btn agregar">Agregar al carrito</button>
+      </div>
+    </div>
+
+    <!-- Casacas -->
+    <div id="casacas" class="scroll-grid" style="display:none;">
+      <div class="card" data-id="21" data-nombre="Casaca Verde LR" data-precio="110">
+        <a href="img/casaca. jpg.png"><img src="img/casaca. jpg.png" alt="Casaca Verde"></a>
+        <div class="info">
+          <h3>Casaca Verde</h3>
+          <p>Verde, talla L</p>
+          <p class="marca">Marca: LR</p>
+          <p class="precio">S/110</p>
+        </div>
+        <button class="btn agregar">Agregar al carrito</button>
+      </div>
+    </div>
+
+    <!-- Accesorios -->
+    <div id="accesorios" class="grid-vertical" style="display:none;">
+      <div class="card" data-id="31" data-nombre="Gorra LR" data-precio="40">
+        <a href="img/Copilot_20250928_234801.png"><img src="img/Copilot_20250928_234801.png" alt="Gorra"></a>
+        <div class="info">
+          <h3>Accesorios</h3>
+          <p>diferentes colores</p>
+          <p class="marca">Marca: LR</p>
+          <p class="precio">S/40</p>
+        </div>
+        <button class="btn agregar">Agregar al carrito</button>
+      </div>
+    </div>
+
+    <!-- Carrito -->
+    <div class="carrito">
+      <h2>🛒 Carrito</h2>
+      <div id="items"></div>
+      <p id="total">Total: S/0.00</p>
+      <div class="acciones-carrito">
+        <button id="ordenar" class="btn">Hacer pedido por WhatsApp</button>
+        <button id="cancelar" class="btn" style="background:#e63946;">Cancelar carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 PANDO - Viste con elegancia</p>
+    <p>Síguenos:
+      <a href="https://www.instagram.com/leandro.rodas.23?igsh=eTl1NDlvY2w4OGl4">Instagram</a> | <a href="https://www.facebook.com/leandro.rodas.16?mibextid=ZbWKwL">Facebook</a>
+    </p>
+  </footer>
+
+  <!-- Modales -->
+  <div id="img1" class="modal"><img src="img/zapatilla .jpg.png" alt=""><a href="#" class="cerrar">✖</a></div>
+  <div id="img2" class="modal"><img src="img/conjunto1.png" alt=""><a href="#" class="cerrar">✖</a></div>
+  <div id="img3" class="modal"><img src="img/casaca1.png" alt=""><a href="#" class="cerrar">✖</a></div>
+  <div id="img4" class="modal"><img src="img/gorra1.png" alt=""><a href="#" class="cerrar">✖</a></div>
+
+  <script>
+    const telefono = '51931185949';
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const itemsDiv = document.getElementById('items');
+    const totalP = document.getElementById('total');
+    const contador = document.getElementById('contador');
+
+    function mostrar(id) {
+      document.querySelectorAll('.scroll-grid, .grid-vertical').forEach(g => g.style.display = 'none');
+      document.getElementById(id).style.display = (id === 'zapatillas' || id === 'casacas') ? 'flex' : 'grid';
+    }
+
+    function activarBotones() {
+      document.querySelectorAll('.btn.agregar').forEach(btn => {
+        btn.onclick = () => {
+          const card = btn.closest('.card');
+          const id = card.dataset.id;
+          const nombre = card.dataset.nombre;
+          const precio = Number(card.dataset.precio);
+          agregarAlCarrito({ id, nombre, precio });
+          actualizarCarrito();
+        }
+      });
+    }
+
+    function agregarAlCarrito(item) {
+      const existe = carrito.find(x => x.id === item.id);
+      if (existe) { existe.qty += 1; }
+      else { carrito.push({ ...item, qty: 1 }); }
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+    }
+
+    function actualizarCarrito() {
+      itemsDiv.innerHTML = '';
+      let total = 0, cantidad = 0;
+      carrito.forEach((i, idx) => {
+        const p = document.createElement('p');
+        p.innerHTML = `${i.nombre} - S/${i.precio} x ${i.qty} 
+          <button onclick="quitar(${idx})">❌</button>`;
+        itemsDiv.appendChild(p);
+        total += i.precio * i.qty;
+        cantidad += i.qty;
+      });
+      totalP.textContent = `Total: S/${total.toFixed(2)}`;
+      contador.textContent = `Productos en carrito: ${cantidad}`;
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+    }
+
+    function quitar(index) {
+      carrito.splice(index, 1);
+      actualizarCarrito();
+    }
+    window.quitar = quitar;
+
+    document.getElementById('ordenar').addEventListener('click', () => {
+      if (carrito.length === 0) return alert('Carrito vacío');
+      let mensaje = 'Hola, quiero pedir:%0A';
+      carrito.forEach(i => {
+        mensaje += `- ${i.nombre} x${i.qty}: S/${(i.precio * i.qty).toFixed(2)}%0A`;
+      });
+      mensaje += `Total: S/${carrito.reduce((s, i) => s + i.precio * i.qty, 0).toFixed(2)}`;
+      window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
+    });
+
+    document.getElementById('cancelar').addEventListener('click', () => {
+      if (confirm('¿Seguro que quieres vaciar el carrito?')) {
+        carrito.length = 0;
+        localStorage.removeItem('carrito');
+        actualizarCarrito();
+      }
+    });
+
+    activarBotones();
+    actualizarCarrito();
+  </script>
+  <!-- Contenedor de galería -->
+<div id="galeriaModal" class="modal">
+  <a href="#" class="cerrar">✖</a>
+  <span class="prev" onclick="cambiarImg(-1)">⟨</span>
+  <img id="galeriaImg" src="" alt="">
+  <span class="next" onclick="cambiarImg(1)">⟩</span>
+</div>
+
+<style>
+  #galeriaModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+    background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:1000; }
+  #galeriaModal img { max-width:80%; max-height:80%; border-radius:12px; }
+  #galeriaModal .cerrar { position:absolute; top:20px; right:30px; color:#fff; font-size:2rem; text-decoration:none; }
+  #galeriaModal .prev, #galeriaModal .next {
+    position:absolute; top:50%; transform:translateY(-50%);
+    font-size:3rem; color:#fff; cursor:pointer; user-select:none;
+    padding:10px; background:rgba(0,0,0,0.3); border-radius:50%;
+  }
+  #galeriaModal .prev { left:30px; }
+  #galeriaModal .next { right:30px; }
+</style>
+
+<script>
+  const imagenes = Array.from(document.querySelectorAll('.card img')).map(img => img.src);
+  let indice = 0;
+
+  // abrir modal al hacer click en imagen
+  document.querySelectorAll('.card img').forEach((img, i) => {
+    img.addEventListener('click', e => {
+      e.preventDefault();
+      indice = i;
+      mostrarGaleria();
+    });
+  });
+
+  function mostrarGaleria() {
+    document.getElementById('galeriaModal').style.display = 'flex';
+    document.getElementById('galeriaImg').src = imagenes[indice];
+  }
+
+  function cambiarImg(n) {
+    indice = (indice + n + imagenes.length) % imagenes.length;
+    mostrarGaleria();
+  }
+
+  // cerrar modal con clic en ✖ o fuera de la imagen
+  document.querySelector('#galeriaModal .cerrar').addEventListener('click', () => {
+    document.getElementById('galeriaModal').style.display = 'none';
+  });
+  document.getElementById('galeriaModal').addEventListener('click', e => {
+    if (e.target.id === 'galeriaModal') {
+      document.getElementById('galeriaModal').style.display = 'none';
+    }
+  });
+</script>
+</body>
+</html>
