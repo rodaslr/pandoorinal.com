@@ -357,16 +357,64 @@
     }
     window.quitar = quitar;
 
-    document.getElementById('ordenar').addEventListener('click', () => {
-      if (carrito.length === 0) return alert('Carrito vacío');
-      let mensaje = 'Hola, quiero pedir:%0A';
-      carrito.forEach(i => {
-        mensaje += `- ${i.nombre} x${i.qty}: S/${(i.precio * i.qty).toFixed(2)}%0A`;
-      });
-      mensaje += `Total: S/${carrito.reduce((s, i) => s + i.precio * i.qty, 0).toFixed(2)}`;
-      window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
-    });
+ document.getElementById('ordenar').addEventListener('click', () => {
+  if (carrito.length === 0) return alert('Carrito vacío');
 
+  // Pide nombre y teléfono al cliente
+  const nombre = prompt("¿Cuál es tu nombre?");
+  const telefonoCliente = prompt("¿Cuál es tu número de WhatsApp?");
+
+  // Arma los datos del pedido
+  const pedidoData = {
+    data: [
+      {
+        fecha: new Date().toLocaleString(),
+        productos: carrito.map(i => `${i.nombre} x${i.qty}`).join(', '),
+        total: carrito.reduce((s, i) => s + i.precio * i.qty, 0),
+        nombre: nombre || "",
+        telefono: telefonoCliente || ""
+      }
+    ]
+  };
+
+  document.getElementById('ordenar').addEventListener('click', () => {
+  if (carrito.length === 0) return alert('Carrito vacío');
+
+  // Pide nombre y teléfono al cliente
+  const nombre = prompt("¿Cuál es tu nombre?");
+  const telefonoCliente = prompt("¿Cuál es tu número de WhatsApp?");
+
+  // Arma los datos del pedido
+  const pedidoData = {
+    data: [
+      {
+        fecha: new Date().toLocaleString(),
+        productos: carrito.map(i => `${i.nombre} x${i.qty}`).join(', '),
+        total: carrito.reduce((s, i) => s + i.precio * i.qty, 0),
+        nombre: nombre || "",
+        telefono: telefonoCliente || ""
+      }
+    ]
+  };
+
+  // Guarda el pedido en Google Sheets usando SheetDB
+  fetch('https://sheetdb.io/api/v1/l1w6nqepjgj40', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(pedidoData)
+  })
+  .then(response => response.json())
+  .finally(() => {
+    // Siempre abre WhatsApp, aunque falle el guardado
+    let mensaje = '¡Hola equipo PANDO ORIGINAL! 😁%0A%0AMe gustaría pedir lo siguiente:%0A';
+    carrito.forEach(i => {
+      mensaje += `- ${i.nombre} x${i.qty} – S/${(i.precio * i.qty).toFixed(2)}%0A`;
+    });
+    mensaje += `%0ATotal: S/${carrito.reduce((s, i) => s + i.precio * i.qty, 0).toFixed(2)}%0A%0ANombre: ${nombre}%0ATeléfono: ${telefonoCliente}%0A¿Me pueden ayudar con los siguientes pasos para la entrega?%0A¡Gracias!`;
+    window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
+  });
+});
+});
     document.getElementById('cancelar').addEventListener('click', () => {
       if (confirm('¿Seguro que quieres vaciar el carrito?')) {
         carrito.length = 0;
@@ -380,7 +428,7 @@
   </script>
   <!-- Contenedor de galería -->
 <div id="galeriaModal" class="modal">
-  <a href="#" class="cerrar">✖</a>
+  <a href="O" class="cerrar">✖</a>
   <span class="prev" onclick="cambiarImg(-1)">⟨</span>
   <img id="galeriaImg" src="" alt="">
   <span class="next" onclick="cambiarImg(1)">⟩</span>
